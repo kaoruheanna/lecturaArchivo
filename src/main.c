@@ -44,8 +44,16 @@ int useMips(char* fileName){
     
     printf("buff incr size: %d \n",bufIncrSize);
 
-    readFile(buffer, bufIncrSize, fileDescriptor);
-    printf("%s",buffer);
+    int leidos = readFile(buffer, bufIncrSize, fileDescriptor);
+    printf("%s \n",buffer);
+    printf("leidos: %d \n",leidos);
+    leidos = readFile(buffer, bufIncrSize, fileDescriptor);
+    printf("%s \n",buffer);
+	printf("leidos: %d \n",leidos);
+	leidos = readFile(buffer, bufIncrSize, fileDescriptor);
+	printf("%s \n",buffer);
+	printf("leidos: %d \n",leidos);
+
 //    while (readFile(buffer, bufIncrSize, fileDescriptor)) {
 //    	printf("\n %s \n","imprimo linea");
 //		printf("%s",buffer);

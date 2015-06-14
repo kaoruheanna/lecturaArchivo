@@ -9,7 +9,7 @@
 #constants
 #
 BYTES_TO_READ = 1
-MAX_BYTES_TO_READ = 10
+MAX_BYTES_TO_READ = 9
 
 #sizes
 ABA_SIZE = 16
@@ -65,24 +65,12 @@ _forBuffer:
     j _forBuffer
 
 readToBuffer:
-#	li 		a0, BYTES_TO_READ # alloco 1 byte
-#	la		t9, mymalloc
-#	jal		ra, t9
-#	sw		v0, READ_BYTE_ADDRESS_OFFSET($fp)
 
 	li 		t1, MAX_BYTES_TO_READ	# t1 = cantidad maxima de bytes a leer
-	li		t0, 2							# t0 = i
+	li		t0, 0							# t0 = i
 	sw		t0, TOTAL_BYTES_READ_OFFSET($fp)
-_forRead:
-#	lw		t0, TOTAL_BYTES_READ_OFFSET($fp)
 
-	# print para debug
-#	li		v0, SYS_write
-#	li		a0, 1
-#	addiu	a1,$fp,TOTAL_BYTES_READ_OFFSET
-#	li		a2, 1
-#	syscall
-	#
+_forRead:
 
 	lw		t0, TOTAL_BYTES_READ_OFFSET($fp)
 	li 		t1, MAX_BYTES_TO_READ
@@ -98,14 +86,15 @@ _forRead:
 	li 		a2, BYTES_TO_READ					# buffer length
 	syscall 					        # read from file
 
-	lw		t0, TOTAL_BYTES_READ_OFFSET($fp)
-	lw		t6, BUFFER_OFFSET($fp)
+	#lw		t0, TOTAL_BYTES_READ_OFFSET($fp)
+	#lw		t6, BUFFER_OFFSET($fp)
+
 	# print para debug
-	li		v0, SYS_write
-	li		a0, 1
-	addu	a1,t6,t0
-	li		a2, 1
-	syscall
+	#li		v0, SYS_write
+	#li		a0, 1
+	#addu	a1,t6,t0
+	#li		a2, 1
+	#syscall
 	#
 
 	lw		t0, TOTAL_BYTES_READ_OFFSET($fp)
