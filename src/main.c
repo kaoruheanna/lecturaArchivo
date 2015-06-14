@@ -46,12 +46,6 @@ int useMips(char* fileName){
 		printf("%s",buffer);
     }
     
-    /*
-    int result = readFile(buffer, bufIncrSize, fileDescriptor);
-    printf("result: %d \n",result);
-    printf("%s \n",buffer);
-    */
-    
     myfree(buffer);
     fclose(fp);
   	return (EXIT_SUCCESS);

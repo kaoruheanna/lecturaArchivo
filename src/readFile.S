@@ -9,7 +9,6 @@
 #constants
 #
 BYTES_TO_READ = 1
-MAX_BYTES_TO_READ = 9
 NEW_LINE_ASCII = 10
 
 #sizes
@@ -56,7 +55,7 @@ readFile:
     
 clearBuffer:
 	lw		a0, BUFFER_OFFSET($fp)
-	li 		a1, MAX_BYTES_TO_READ
+	lw 		a1, BUFF_INCR_SIZE_OFFSET($fp)
 	li		t0, 0 		# t0 = i
 _forBuffer:
     bgeu 	t0, a1, readToBuffer	# si (i >= bufIncrSize) voy a read
@@ -66,15 +65,14 @@ _forBuffer:
     j _forBuffer
 
 readToBuffer:
-
-	li 		t1, MAX_BYTES_TO_READ	# t1 = cantidad maxima de bytes a leer
+	lw 		t1, BUFF_INCR_SIZE_OFFSET($fp)	# t1 = cantidad maxima de bytes a leer
 	li		t0, 0							# t0 = i
 	sw		t0, TOTAL_BYTES_READ_OFFSET($fp)
 
 _forRead:
 
 	lw		t0, TOTAL_BYTES_READ_OFFSET($fp)
-	li 		t1, MAX_BYTES_TO_READ
+	lw 		t1, BUFF_INCR_SIZE_OFFSET($fp)
 	bgeu 	t0, t1, _endRead	# si (i >= bufIncrSize) termino de leer
 
 	lw		t2, BUFFER_OFFSET($fp)
