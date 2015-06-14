@@ -1,0 +1,5 @@
+The status information word st_flags has the following bits:
+
+	Constant	Description
+	UF_NODUMP	do not dump a file
+	UF_IMMUTABLE	file may not be changed
