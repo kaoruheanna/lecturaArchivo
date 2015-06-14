@@ -7,17 +7,24 @@
 extern int readFile(char *buffer, int n, int fileDescriptor);
 extern void *mymalloc(size_t);
 extern void myfree(void *);
-int useMips();
+int useMips(char* fileName);
 
 int main(int argc, char** argv) {
-	return useMips();
+
+	if (argc < 2) { //no tengo archivo de entrada, uso standard input
+		printf("%s \n","falta archivo a imprimir");
+	    return (EXIT_SUCCESS);
+	}
+
+	printf("abro archivo %s \n",argv[1]);
+	return useMips(argv[1]);
 }
 
 
-int useMips(){
-	int bufIncrSize = 1;
+int useMips(char* fileName){
+	int bufIncrSize = 10;
 	FILE *fp;
-	fp = fopen("test-files/null.txt", "r");
+	fp = fopen(fileName, "r");
 	if (fp == NULL) {
         fprintf(stderr, ": nombre de archivo o comando inválido.\n");
         return (EXIT_FAILURE);
@@ -37,6 +44,7 @@ int useMips(){
     buffer[bufIncrSize - 1] = 0;
     
     while (readFile(buffer, bufIncrSize, fileDescriptor)) {
+    	printf("\n %s \n","imprimo linea");
 		printf("%s",buffer);
     }
     
