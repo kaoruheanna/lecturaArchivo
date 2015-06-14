@@ -10,6 +10,7 @@
 #
 BYTES_TO_READ = 1
 MAX_BYTES_TO_READ = 9
+NEW_LINE_ASCII = 10
 
 #sizes
 ABA_SIZE = 16
@@ -19,8 +20,8 @@ FRAME_SIZE = ABA_SIZE + LTA_SIZE + SRA_SIZE
 
 #offsets
 LTA_OFFSET = ABA_SIZE
-READ_BYTE_ADDRESS_OFFSET = LTA_OFFSET
-TOTAL_BYTES_READ_OFFSET = LTA_OFFSET + 4
+TOTAL_BYTES_READ_OFFSET = LTA_OFFSET
+LAST_READ_CHAR_OFFSET = LTA_OFFSET + 4
 
 SRA_OFFSET = LTA_OFFSET + LTA_SIZE
 GP_OFFSET = SRA_OFFSET
@@ -76,52 +77,35 @@ _forRead:
 	li 		t1, MAX_BYTES_TO_READ
 	bgeu 	t0, t1, _endRead	# si (i >= bufIncrSize) termino de leer
 
-	lw		t6, BUFFER_OFFSET($fp)
-	addu	t6, t6, t0
+	lw		t2, BUFFER_OFFSET($fp)
+	addu	t2, t2, t0
 
 	#read from file
 	li 		v0, SYS_read      				 # system call for read from file
 	lw 		a0, FILE_DESCRIPTOR_OFFSET($fp)  	# file descriptor
-	move	a1, t6							#buffer
+	move	a1, t2							#buffer
 	li 		a2, BYTES_TO_READ					# buffer length
 	syscall 					        # read from file
 
-	#lw		t0, TOTAL_BYTES_READ_OFFSET($fp)
-	#lw		t6, BUFFER_OFFSET($fp)
+	beq		v0, zero, _endRead		# si devuelve 0, termino de leer
 
-	# print para debug
-	#li		v0, SYS_write
-	#li		a0, 1
-	#addu	a1,t6,t0
-	#li		a2, 1
-	#syscall
-	#
+	lw		t0, TOTAL_BYTES_READ_OFFSET($fp)
+	lw		t2, BUFFER_OFFSET($fp)
+	addu	t2, t2, t0
+	lb		t3, 0(t2)		# t3 = ultimo caracter leido
+	sb		t3, LAST_READ_CHAR_OFFSET($fp)
 
 	lw		t0, TOTAL_BYTES_READ_OFFSET($fp)
 	addi	t0, t0, 1		# i++
 	sw		t0, TOTAL_BYTES_READ_OFFSET($fp)
+
+	lb		t3, LAST_READ_CHAR_OFFSET($fp)
+	li 		t4, NEW_LINE_ASCII
+	beq		t3, t4, _endRead
+
 	j		_forRead
 
-
-#	beq		v0, zero, _endRead		# si devuelve 0, termino de leer
-
-
-#	lw		t2, READ_BYTE_ADDRESS_OFFSET($fp)	# t2 = &readByte
-#	lb 		t3, 0(t2)							# t3 = readByte
-
-#	lw		t4, BUFFER_OFFSET($fp) 		#t4 = &buffer
-#	addu	t4, t4, t0
-#	sb		t3, 0(t4)			# buffer[i] = byte leido
-
-
-#	addiu	t0, t0, 1		# i++
-#	sw		t0, TOTAL_BYTES_READ_OFFSET($fp)
-#	j		_forRead
-	
 _endRead:
-#	lw		a0, READ_BYTE_ADDRESS_OFFSET($fp)		#cargo puntero a line que esta en (fp + 24)
-#	la		t9,myfree		#llamo a myfree
-#	jal		ra,t9
 
 	lw		v0, TOTAL_BYTES_READ_OFFSET($fp)
 	lw 		gp, GP_OFFSET(sp)

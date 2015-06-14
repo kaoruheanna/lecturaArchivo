@@ -15,7 +15,6 @@ int main(int argc, char** argv) {
 	    return (EXIT_SUCCESS);
 	}
 
-	printf("abro archivo %s \n",argv[1]);
 	return useMips(argv[1]);
 }
 
@@ -42,22 +41,10 @@ int useMips(char* fileName){
     }
     buffer[bufIncrSize - 1] = 0;
     
-    printf("buff incr size: %d \n",bufIncrSize);
 
-    int leidos = readFile(buffer, bufIncrSize, fileDescriptor);
-    printf("%s \n",buffer);
-    printf("leidos: %d \n",leidos);
-    leidos = readFile(buffer, bufIncrSize, fileDescriptor);
-    printf("%s \n",buffer);
-	printf("leidos: %d \n",leidos);
-	leidos = readFile(buffer, bufIncrSize, fileDescriptor);
-	printf("%s \n",buffer);
-	printf("leidos: %d \n",leidos);
-
-//    while (readFile(buffer, bufIncrSize, fileDescriptor)) {
-//    	printf("\n %s \n","imprimo linea");
-//		printf("%s",buffer);
-//    }
+    while (readFile(buffer, bufIncrSize, fileDescriptor)) {
+		printf("%s",buffer);
+    }
     
     /*
     int result = readFile(buffer, bufIncrSize, fileDescriptor);
