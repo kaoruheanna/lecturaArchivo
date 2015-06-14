@@ -9,6 +9,7 @@
 #constants
 #
 BYTES_TO_READ = 1
+MAX_BYTES_TO_READ = 10
 
 #sizes
 ABA_SIZE = 16
@@ -54,7 +55,7 @@ readFile:
     
 clearBuffer:
 	lw		a0, BUFFER_OFFSET($fp)
-	lw 		a1, BUFF_INCR_SIZE_OFFSET($fp)
+	li 		a1, MAX_BYTES_TO_READ
 	li		t0, 0 		# t0 = i
 _forBuffer:
     bgeu 	t0, a1, readToBuffer	# si (i >= bufIncrSize) voy a read
@@ -69,39 +70,49 @@ readToBuffer:
 #	jal		ra, t9
 #	sw		v0, READ_BYTE_ADDRESS_OFFSET($fp)
 
-	lw 		t1, BUFF_INCR_SIZE_OFFSET($fp)	# t1 = cantidad maxima de bytes a leer
-	li		t0, 48							# t0 = i
+	li 		t1, MAX_BYTES_TO_READ	# t1 = cantidad maxima de bytes a leer
+	li		t0, 2							# t0 = i
 	sw		t0, TOTAL_BYTES_READ_OFFSET($fp)
 _forRead:
+#	lw		t0, TOTAL_BYTES_READ_OFFSET($fp)
+
+	# print para debug
+#	li		v0, SYS_write
+#	li		a0, 1
+#	addiu	a1,$fp,TOTAL_BYTES_READ_OFFSET
+#	li		a2, 1
+#	syscall
+	#
+
 	lw		t0, TOTAL_BYTES_READ_OFFSET($fp)
+	li 		t1, MAX_BYTES_TO_READ
+	bgeu 	t0, t1, _endRead	# si (i >= bufIncrSize) termino de leer
+
+	lw		t6, BUFFER_OFFSET($fp)
+	addu	t6, t6, t0
+
+	#read from file
+	li 		v0, SYS_read      				 # system call for read from file
+	lw 		a0, FILE_DESCRIPTOR_OFFSET($fp)  	# file descriptor
+	move	a1, t6							#buffer
+	li 		a2, BYTES_TO_READ					# buffer length
+	syscall 					        # read from file
+
+	lw		t0, TOTAL_BYTES_READ_OFFSET($fp)
+	lw		t6, BUFFER_OFFSET($fp)
 	# print para debug
 	li		v0, SYS_write
 	li		a0, 1
-	addiu	a1,$fp,TOTAL_BYTES_READ_OFFSET
+	addu	a1,t6,t0
 	li		a2, 1
 	syscall
 	#
 
 	lw		t0, TOTAL_BYTES_READ_OFFSET($fp)
-	li		t1, 58
-	bgeu 	t0, t1, _endRead	# si (i >= bufIncrSize) termino de leer
-
 	addi	t0, t0, 1		# i++
 	sw		t0, TOTAL_BYTES_READ_OFFSET($fp)
 	j		_forRead
 
-
-
-#	lw		t6, BUFFER_OFFSET($fp)
-#	addu	t6, t6, t0
-
-	#read from file
-#	li 		v0, SYS_read      				 # system call for read from file
-#	lw 		a0, FILE_DESCRIPTOR_OFFSET($fp)  	# file descriptor
-#	move	a1, t6							#buffer
-	#lw 		a1, READ_BYTE_ADDRESS_OFFSET($fp)  	# address to which to read
-#	li 		a2, BYTES_TO_READ					# buffer length
-#	syscall 					        # read from file
 
 #	beq		v0, zero, _endRead		# si devuelve 0, termino de leer
 
@@ -123,7 +134,7 @@ _endRead:
 #	la		t9,myfree		#llamo a myfree
 #	jal		ra,t9
 
-#	lw		v0, TOTAL_BYTES_READ_OFFSET($fp)
+	lw		v0, TOTAL_BYTES_READ_OFFSET($fp)
 	lw 		gp, GP_OFFSET(sp)
 	lw 		$fp, FP_OFFSET(sp)
 	lw 		ra, RA_OFFSET(sp)

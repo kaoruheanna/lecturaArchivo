@@ -3,7 +3,6 @@
 #include <string.h>
 #include <sys/syscall.h>
 
-//extern char *readFile(char *buffer, int n, FILE *stream);
 extern int readFile(char *buffer, int n, int fileDescriptor);
 extern void *mymalloc(size_t);
 extern void myfree(void *);
@@ -46,6 +45,7 @@ int useMips(char* fileName){
     printf("buff incr size: %d \n",bufIncrSize);
 
     readFile(buffer, bufIncrSize, fileDescriptor);
+    printf("%s",buffer);
 //    while (readFile(buffer, bufIncrSize, fileDescriptor)) {
 //    	printf("\n %s \n","imprimo linea");
 //		printf("%s",buffer);
