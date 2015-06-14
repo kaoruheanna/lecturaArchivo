@@ -70,7 +70,7 @@ readToBuffer:
 #	sw		v0, READ_BYTE_ADDRESS_OFFSET($fp)
 
 	lw 		t1, BUFF_INCR_SIZE_OFFSET($fp)	# t1 = cantidad maxima de bytes a leer
-	li		t0, 1 							# t0 = i
+	li		t0, 48							# t0 = i
 	sw		t0, TOTAL_BYTES_READ_OFFSET($fp)
 _forRead:
 	lw		t0, TOTAL_BYTES_READ_OFFSET($fp)
@@ -83,17 +83,8 @@ _forRead:
 	#
 
 	lw		t0, TOTAL_BYTES_READ_OFFSET($fp)
-	li		t1, 10
-	#lw 		t1, BUFF_INCR_SIZE_OFFSET($fp)	# t1 = cantidad maxima de bytes a leer
+	li		t1, 58
 	bgeu 	t0, t1, _endRead	# si (i >= bufIncrSize) termino de leer
-
-	# print para debug
-	li	v0, SYS_write
-	li	a0, 1
-	la	a1, msg
-	li	a2, 12
-	syscall
-	#
 
 	addi	t0, t0, 1		# i++
 	sw		t0, TOTAL_BYTES_READ_OFFSET($fp)
