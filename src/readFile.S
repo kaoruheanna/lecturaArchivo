@@ -116,8 +116,3 @@ _endRead:
 	.end readFile
     
   	.rdata
-msg:
-	.asciiz	"Hola mundo.\n"
-msg2:
-	.asciiz	"2:Hola mundo.\n"
-    
