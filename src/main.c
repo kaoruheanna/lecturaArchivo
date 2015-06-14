@@ -43,10 +43,13 @@ int useMips(char* fileName){
     }
     buffer[bufIncrSize - 1] = 0;
     
-    while (readFile(buffer, bufIncrSize, fileDescriptor)) {
-    	printf("\n %s \n","imprimo linea");
-		printf("%s",buffer);
-    }
+    printf("buff incr size: %d \n",bufIncrSize);
+
+    readFile(buffer, bufIncrSize, fileDescriptor);
+//    while (readFile(buffer, bufIncrSize, fileDescriptor)) {
+//    	printf("\n %s \n","imprimo linea");
+//		printf("%s",buffer);
+//    }
     
     /*
     int result = readFile(buffer, bufIncrSize, fileDescriptor);
